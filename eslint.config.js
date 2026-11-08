@@ -33,7 +33,7 @@ const baseESLintConfig = {
     "no-unused-private-class-members": "error",
     "no-use-before-define": "error",
     "require-atomic-updates": "error",
-    "camelcase": "error",
+		"camelcase": ["error", { "properties": "never" }],
   }
 }
 

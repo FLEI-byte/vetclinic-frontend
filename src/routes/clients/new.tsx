@@ -1,9 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import type { FunctionComponent } from "@/common/types";
-
-const ClientNewPage = (): FunctionComponent => {
-	return <div className="p-4">Клієнти: створення</div>;
-};
+import { ClientNewPage } from "@/features/clients/pages/ClientNewPage";
 
 export const Route = createFileRoute("/clients/new")({
 	component: ClientNewPage,
