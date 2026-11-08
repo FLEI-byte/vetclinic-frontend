@@ -1,12 +1,22 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+	useMutation,
+	useQuery,
+	useQueryClient,
+	type UseMutationResult,
+	type UseQueryResult,
+} from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import apiClient from "@/lib/axios";
 import type { ApiResponse } from "@/lib/api-types";
-import type { Client, ClientInput } from "@/features/clients/types";
+import type {
+	Client,
+	ClientInput,
+	ClientUpdateVariables,
+} from "@/features/clients/types";
 
 // Функції для API-запитів
-const getClients = async (): Promise<Client[]> => {
-	const response = await apiClient.get<ApiResponse<Client[]>>("/clients");
+const getClients = async (): Promise<Array<Client>> => {
+	const response = await apiClient.get<ApiResponse<Array<Client>>>("/clients");
 	return response.data.data;
 };
 
@@ -26,10 +36,7 @@ const createClient = async (newClient: ClientInput): Promise<Client> => {
 const updateClient = async ({
 	id,
 	data,
-}: {
-	id: number;
-	data: Partial<ClientInput>;
-}): Promise<Client> => {
+}: ClientUpdateVariables): Promise<Client> => {
 	const response = await apiClient.patch<ApiResponse<Client>>(
 		`/clients/${id}`,
 		data
@@ -42,16 +49,20 @@ const deleteClient = async (id: number): Promise<void> => {
 };
 
 // Хуки для використання в компонентах
-export const useClients = () =>
-	useQuery<Client[]>({ queryKey: ["clients"], queryFn: getClients });
+export const useClients = (): UseQueryResult<Array<Client>> =>
+	useQuery<Array<Client>>({ queryKey: ["clients"], queryFn: getClients });
 
-export const useClient = (id: number) =>
+export const useClient = (id: number): UseQueryResult<Client> =>
 	useQuery<Client>({
 		queryKey: ["clients", id],
 		queryFn: () => getClientById(id),
 	});
 
-export const useCreateClient = () => {
+export const useCreateClient = (): UseMutationResult<
+	Client,
+	Error,
+	ClientInput
+> => {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	return useMutation({
@@ -63,7 +74,11 @@ export const useCreateClient = () => {
 	});
 };
 
-export const useUpdateClient = () => {
+export const useUpdateClient = (): UseMutationResult<
+	Client,
+	Error,
+	ClientUpdateVariables
+> => {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	return useMutation({
@@ -76,7 +91,7 @@ export const useUpdateClient = () => {
 	});
 };
 
-export const useDeleteClient = () => {
+export const useDeleteClient = (): UseMutationResult<void, Error, number> => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: deleteClient,

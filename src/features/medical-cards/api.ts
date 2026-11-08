@@ -1,16 +1,23 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+	useMutation,
+	useQuery,
+	useQueryClient,
+	type UseMutationResult,
+	type UseQueryResult,
+} from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import apiClient from "@/lib/axios";
 import type { ApiResponse } from "@/lib/api-types";
 import type {
 	MedicalCard,
 	MedicalCardInput,
+	MedicalCardUpdateVariables,
 } from "@/features/medical-cards/types";
 
 // Функції для API-запитів
-const getMedicalCards = async (): Promise<MedicalCard[]> => {
+const getMedicalCards = async (): Promise<Array<MedicalCard>> => {
 	const response =
-		await apiClient.get<ApiResponse<MedicalCard[]>>("/medical-cards");
+		await apiClient.get<ApiResponse<Array<MedicalCard>>>("/medical-cards");
 	return response.data.data;
 };
 
@@ -34,10 +41,7 @@ const createMedicalCard = async (
 const updateMedicalCard = async ({
 	id,
 	data,
-}: {
-	id: number;
-	data: Partial<MedicalCardInput>;
-}): Promise<MedicalCard> => {
+}: MedicalCardUpdateVariables): Promise<MedicalCard> => {
 	const response = await apiClient.patch<ApiResponse<MedicalCard>>(
 		`/medical-cards/${id}`,
 		data
@@ -50,19 +54,23 @@ const deleteMedicalCard = async (id: number): Promise<void> => {
 };
 
 // Хуки для використання в компонентах
-export const useMedicalCards = () =>
-	useQuery<MedicalCard[]>({
+export const useMedicalCards = (): UseQueryResult<Array<MedicalCard>> =>
+	useQuery<Array<MedicalCard>>({
 		queryKey: ["medical-cards"],
 		queryFn: getMedicalCards,
 	});
 
-export const useMedicalCard = (id: number) =>
+export const useMedicalCard = (id: number): UseQueryResult<MedicalCard> =>
 	useQuery<MedicalCard>({
 		queryKey: ["medical-cards", id],
 		queryFn: () => getMedicalCardById(id),
 	});
 
-export const useCreateMedicalCard = () => {
+export const useCreateMedicalCard = (): UseMutationResult<
+	MedicalCard,
+	Error,
+	MedicalCardInput
+> => {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	return useMutation({
@@ -74,7 +82,11 @@ export const useCreateMedicalCard = () => {
 	});
 };
 
-export const useUpdateMedicalCard = () => {
+export const useUpdateMedicalCard = (): UseMutationResult<
+	MedicalCard,
+	Error,
+	MedicalCardUpdateVariables
+> => {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	return useMutation({
@@ -87,7 +99,11 @@ export const useUpdateMedicalCard = () => {
 	});
 };
 
-export const useDeleteMedicalCard = () => {
+export const useDeleteMedicalCard = (): UseMutationResult<
+	void,
+	Error,
+	number
+> => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: deleteMedicalCard,

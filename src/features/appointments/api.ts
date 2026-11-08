@@ -1,16 +1,23 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+	useMutation,
+	useQuery,
+	useQueryClient,
+	type UseMutationResult,
+	type UseQueryResult,
+} from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import apiClient from "@/lib/axios";
 import type { ApiResponse } from "@/lib/api-types";
 import type {
 	Appointment,
 	AppointmentInput,
+	AppointmentUpdateVariables,
 } from "@/features/appointments/types";
 
 // Функції для API-запитів
-const getAppointments = async (): Promise<Appointment[]> => {
+const getAppointments = async (): Promise<Array<Appointment>> => {
 	const response =
-		await apiClient.get<ApiResponse<Appointment[]>>("/appointments");
+		await apiClient.get<ApiResponse<Array<Appointment>>>("/appointments");
 	return response.data.data;
 };
 
@@ -34,10 +41,7 @@ const createAppointment = async (
 const updateAppointment = async ({
 	id,
 	data,
-}: {
-	id: number;
-	data: Partial<AppointmentInput>;
-}): Promise<Appointment> => {
+}: AppointmentUpdateVariables): Promise<Appointment> => {
 	const response = await apiClient.patch<ApiResponse<Appointment>>(
 		`/appointments/${id}`,
 		data
@@ -50,19 +54,23 @@ const deleteAppointment = async (id: number): Promise<void> => {
 };
 
 // Хуки для використання в компонентах
-export const useAppointments = () =>
-	useQuery<Appointment[]>({
+export const useAppointments = (): UseQueryResult<Array<Appointment>> =>
+	useQuery<Array<Appointment>>({
 		queryKey: ["appointments"],
 		queryFn: getAppointments,
 	});
 
-export const useAppointment = (id: number) =>
+export const useAppointment = (id: number): UseQueryResult<Appointment> =>
 	useQuery<Appointment>({
 		queryKey: ["appointments", id],
 		queryFn: () => getAppointmentById(id),
 	});
 
-export const useCreateAppointment = () => {
+export const useCreateAppointment = (): UseMutationResult<
+	Appointment,
+	Error,
+	AppointmentInput
+> => {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	return useMutation({
@@ -74,7 +82,11 @@ export const useCreateAppointment = () => {
 	});
 };
 
-export const useUpdateAppointment = () => {
+export const useUpdateAppointment = (): UseMutationResult<
+	Appointment,
+	Error,
+	AppointmentUpdateVariables
+> => {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	return useMutation({
@@ -90,7 +102,11 @@ export const useUpdateAppointment = () => {
 	});
 };
 
-export const useDeleteAppointment = () => {
+export const useDeleteAppointment = (): UseMutationResult<
+	void,
+	Error,
+	number
+> => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: deleteAppointment,

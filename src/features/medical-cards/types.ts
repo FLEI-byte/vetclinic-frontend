@@ -10,7 +10,7 @@ export type MedicalCard = {
 	birth_date: string;
 	created_date: string;
 	client?: ClientShort;
-	appointments?: AppointmentShort[];
+	appointments?: Array<AppointmentShort>;
 };
 
 // Те, що бекенд приймає при створенні й оновленні (MedicalCardDto)
@@ -22,4 +22,10 @@ export type MedicalCardInput = {
 	sex: string;
 	birth_date: string;
 	created_date?: string;
+};
+
+// Змінні для мутації оновлення
+export type MedicalCardUpdateVariables = {
+	id: number;
+	data: Partial<MedicalCardInput>;
 };

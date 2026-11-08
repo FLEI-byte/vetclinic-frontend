@@ -22,3 +22,9 @@ export type AppointmentInput = {
 	diagnosis?: string;
 	total: number;
 };
+
+// Змінні для мутації оновлення
+export type AppointmentUpdateVariables = {
+	id: number;
+	data: Partial<AppointmentInput>;
+};

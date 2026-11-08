@@ -7,7 +7,7 @@ export type Client = {
 	full_name: string;
 	birth_date: string;
 	email: string;
-	medical_cards?: MedicalCardShort[];
+	medical_cards?: Array<MedicalCardShort>;
 };
 
 // Те, що бекенд приймає при створенні й оновленні (ClientDto)
@@ -18,4 +18,10 @@ export type ClientInput = {
 	patronymic: string;
 	birth_date: string;
 	email: string;
+};
+
+// Змінні для мутації оновлення
+export type ClientUpdateVariables = {
+	id: number;
+	data: Partial<ClientInput>;
 };

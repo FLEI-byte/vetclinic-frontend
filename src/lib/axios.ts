@@ -20,10 +20,12 @@ apiClient.interceptors.response.use(
 	(error: unknown) => {
 		if (axios.isAxiosError(error)) {
 			console.error("API Error:", error.response?.data ?? error.message);
-		} else {
-			console.error("API Error:", error);
+			return Promise.reject(error);
 		}
-		return Promise.reject(error);
+		console.error("API Error:", error);
+		return Promise.reject(
+			error instanceof Error ? error : new Error(String(error))
+		);
 	}
 );
 

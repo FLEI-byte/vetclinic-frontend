@@ -7,7 +7,7 @@ export type Employee = {
 	full_name: string;
 	position: string;
 	email: string;
-	appointments?: AppointmentShort[];
+	appointments?: Array<AppointmentShort>;
 };
 
 // Те, що бекенд приймає при створенні й оновленні (EmployeeDto)
@@ -18,4 +18,10 @@ export type EmployeeInput = {
 	patronymic: string;
 	position: string;
 	email: string;
+};
+
+// Змінні для мутації оновлення
+export type EmployeeUpdateVariables = {
+	id: number;
+	data: Partial<EmployeeInput>;
 };
