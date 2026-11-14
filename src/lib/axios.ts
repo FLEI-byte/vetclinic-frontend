@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useAuthStore } from "@/store/authStore";
 
 // Окремий інстанс Axios з базовою адресою API
 const apiClient = axios.create({
@@ -8,11 +9,15 @@ const apiClient = axios.create({
 	},
 });
 
-// Якщо токен є у змінних середовища, додаємо його в Authorization
-const token = import.meta.env.VITE_API_AUTH_TOKEN;
-if (token) {
-	apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-}
+// Інтерцептор запиту: токен зі стору Zustand, а якщо його немає, то з .env
+apiClient.interceptors.request.use((config) => {
+	const token =
+		useAuthStore.getState().token ?? import.meta.env.VITE_API_AUTH_TOKEN;
+	if (token) {
+		config.headers.set("Authorization", `Bearer ${token}`);
+	}
+	return config;
+});
 
 // Інтерцептор відповіді: глобальна обробка помилок
 apiClient.interceptors.response.use(

@@ -1,9 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import type { FunctionComponent } from "../common/types";
+import { useAuthStore } from "@/store/authStore";
 
 export const Home = (): FunctionComponent => {
 	const [t, i18n] = useTranslation();
+	const token = useAuthStore((state) => state.token);
+	const clearToken = useAuthStore((state) => state.clearToken);
 
 	const onTranslateButtonClick = async (): Promise<void> => {
 		if (i18n.resolvedLanguage === "en") {
@@ -31,6 +34,19 @@ export const Home = (): FunctionComponent => {
 					Прийоми
 				</Link>
 			</nav>
+			{token ? (
+				<button
+					className="text-white underline"
+					type="button"
+					onClick={clearToken}
+				>
+					Вийти
+				</button>
+			) : (
+				<Link className="text-white underline" to="/login">
+					Увійти
+				</Link>
+			)}
 			<button
 				className="hover:cursor-pointer"
 				type="submit"
