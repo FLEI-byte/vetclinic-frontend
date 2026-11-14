@@ -1,10 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import type { FunctionComponent } from "@/common/types";
-
-const MedicalCardDetailPage = (): FunctionComponent => {
-	return <div className="p-4">Медичні картки: редагування</div>;
-};
+import { MedicalCardEditPage } from "@/features/medical-cards/pages/MedicalCardEditPage";
 
 export const Route = createFileRoute("/medical-cards/$medicalCardId")({
-	component: MedicalCardDetailPage,
+	component: MedicalCardEditPage,
 });

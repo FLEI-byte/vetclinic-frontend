@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MedicalCardEditPage } from "@/features/medical-cards/pages/MedicalCardEditPage";
+import { MedicalCardNewPage } from "@/features/medical-cards/pages/MedicalCardNewPage";
 
 export const Route = createFileRoute("/medical-cards/new")({
-	component: MedicalCardEditPage,
+	component: MedicalCardNewPage,
 });
